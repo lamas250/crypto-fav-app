@@ -1,14 +1,30 @@
-import { StyleSheet } from 'react-native';
+import { Image, ScrollView, StyleSheet } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 
-export default function TabTwoScreen() {
+export default function TabTwoScreen({ route }) {
+  const { params } = route;
+  const {coin} = params;
+  const {symbol, name, price, imageUrl} = coin;
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabTwoScreen.tsx" />
+      <View style={styles.header}>
+        <Image style={styles.image} source={{ uri: imageUrl }} />
+        <Text style={styles.text} numberOfLines={1}>
+          {" "}
+          {name} - {symbol}{" "}
+        </Text>
+      </View>
+      <View style={styles.statsContainer}>
+        <ScrollView>
+          <View style={styles.statsRow}>
+            <Text style={styles.text}>Price</Text>
+            <Text style={styles.text}>{price}</Text>
+          </View>
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -16,16 +32,34 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    backgroundColor: '#fff'
+  },
+  header: {
+    flex: 30,
     justifyContent: 'center',
+    alignItems: 'center'
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  text: {
+    fontSize: 32,
+    color: '#161616'
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  image: {
+    width: 60,
+    height: 60,
+    resizeMode: 'cover'
   },
+  statsContainer: {
+    flex: 62,
+    backgroundColor: '#161616',
+  },
+  statsRow: {
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  stats: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500'
+  }
 });

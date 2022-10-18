@@ -1,15 +1,43 @@
-import { StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
+import Coin from '../components/Coin';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 
+const coins = [
+  {
+    'id': 1,
+    "name": "Bitcoin",
+    'symbol': 'BTC',
+    'price': '$1,012',
+    'imageUrl': ''
+  },
+  {
+    "id": 2,
+    "name": "Ethereum",
+    "symbol": 'ETH',
+    "price": '$186',
+    "imageUrl": ''
+  }
+]
+
+
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <FlatList
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        data={coins}
+        keyExtractor={(item, index) => `${index}`}
+        renderItem={({ item, index }) => (
+          <Coin
+            coin={item}
+            onPress={() => navigation.navigate("TabTwo", { coin: item })}
+          />
+        )}
+      />
     </View>
   );
 }
@@ -17,8 +45,13 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#161616',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+  },
+  contentContainer: {
+    paddingTop: 10,
+    paddingBottom: 85
   },
   title: {
     fontSize: 20,
