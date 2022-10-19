@@ -13,6 +13,7 @@ const COINS_QUERY = gql`
       symbol
       favorite
       price
+      imageUrl
     }
   }
 `;
