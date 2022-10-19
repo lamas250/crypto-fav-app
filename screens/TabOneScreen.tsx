@@ -1,35 +1,43 @@
-import { FlatList, StyleSheet } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import Coin from '../components/Coin';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
+import { useQuery, gql } from "@apollo/client";
 
-const coins = [
-  {
-    'id': 1,
-    "name": "Bitcoin",
-    'symbol': 'BTC',
-    'price': '$1,012',
-    'imageUrl': ''
-  },
-  {
-    "id": 2,
-    "name": "Ethereum",
-    "symbol": 'ETH',
-    "price": '$186',
-    "imageUrl": ''
+const COINS_QUERY = gql`
+  query Coins($offset: Int, $limit: Int) {
+    coins(offset: $offset, limit: $limit) {
+      name
+      symbol
+      favorite
+      price
+    }
   }
-]
+`;
 
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+  const {data, fetchMore, error } = useQuery(COINS_QUERY, {
+    variables: {
+      offset: 0,
+      limit: 10
+    },
+    fetchPolicy: 'cache-and-network'
+  });
+
+  if(!data || !data.coins){
+    console.log('ERRO', error);
+    return <ActivityIndicator style={{ ...StyleSheet.absoluteFillObject}} />
+  } 
+
   return (
     <View style={styles.container}>
       <FlatList
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
-        data={coins}
+        data={data.coins}
         keyExtractor={(item, index) => `${index}`}
         renderItem={({ item, index }) => (
           <Coin
@@ -37,6 +45,26 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             onPress={() => navigation.navigate("TabTwo", { coin: item })}
           />
         )}
+        onEndReachedThreshold={0.9}
+        onEndReached={() => {
+          fetchMore({
+            variables: {
+              offset: data.coins.length
+            },
+            updateQuery(previousQueryResult, options) {              
+              // console.log("prev", previousQueryResult);
+              // console.log('opt', options);
+              
+              if(!options.fetchMoreResult) return previousQueryResult;
+              return Object.assign({}, previousQueryResult, {
+                coins: [
+                  ...previousQueryResult.coins,
+                  ...options.fetchMoreResult.coins,
+                ],
+              });
+            },
+          })
+        }}
       />
     </View>
   );

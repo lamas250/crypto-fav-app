@@ -13,6 +13,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.0",
     "@apollo/react-hooks": "^4.0.0",
     "@expo/vector-icons": "^13.0.0",
     "@react-navigation/bottom-tabs": "^6.0.5",
@@ -21,6 +22,7 @@
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link-http": "^1.5.17",
+    "core-js": "^3.25.5",
     "expo": "~46.0.16",
     "expo-asset": "~8.6.1",
     "expo-constants": "~13.2.4",
